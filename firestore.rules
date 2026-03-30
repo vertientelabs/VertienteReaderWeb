@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.usertype;
+    }
+
+    function hasRole(role) {
+      return isAuth() && getUserRole() == role;
+    }
+
+    function hasAnyRole(roles) {
+      return isAuth() && getUserRole() in roles;
+    }
+
+    function sameCompany(docData) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.companiId == docData.companiId;
+    }
+
+    // Lecturas
+    match /lecturas/{lecturaId} {
+      allow read: if isAuth();
+      allow create: if hasAnyRole(['operario', 'supervisor', 'administrador', 'root']);
+      allow update: if hasAnyRole(['supervisor', 'administrador', 'root']);
+      allow delete: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // ClienteMedidor (legacy - app móvil)
+    match /clientemedidor/{docId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['operario', 'supervisor', 'administrador', 'root']);
+    }
+
+    // Operarios (legacy - app móvil)
+    match /operarios/{docId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Users
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Companies
+    match /companies/{companyId} {
+      allow read: if isAuth();
+      allow write: if hasRole('root');
+    }
+
+    // Clientes
+    match /clientes/{clienteId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['supervisor', 'administrador', 'root']);
+    }
+
+    // Medidores
+    match /medidores/{medidorId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['supervisor', 'administrador', 'root']);
+    }
+
+    // Zonas
+    match /zonas/{zonaId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Rutas
+    match /rutas/{rutaId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Asignaciones
+    match /asignaciones/{asignacionId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['supervisor', 'administrador', 'root']);
+    }
+
+    // Periodos
+    match /periodos/{periodoId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Auditoria
+    match /auditoria/{logId} {
+      allow read: if hasAnyRole(['administrador', 'root']);
+      allow create: if isAuth();
+      allow update, delete: if false;
+    }
+
+    // Configuracion
+    match /configuracion/{configId} {
+      allow read: if isAuth();
+      allow write: if hasAnyRole(['administrador', 'root']);
+    }
+
+    // Ubigeo (read-only for all authenticated)
+    match /departamentos/{docId} {
+      allow read: if isAuth();
+      allow write: if hasRole('root');
+    }
+    match /provincias/{docId} {
+      allow read: if isAuth();
+      allow write: if hasRole('root');
+    }
+    match /distritos/{docId} {
+      allow read: if isAuth();
+      allow write: if hasRole('root');
+    }
+  }
+}

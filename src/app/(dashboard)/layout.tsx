@@ -1,0 +1,36 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/hooks/use-auth';
+import Sidebar from '@/components/layout/sidebar';
+import Topbar from '@/components/layout/topbar';
+import Breadcrumb from '@/components/layout/breadcrumb';
+import { FullPageLoader } from '@/components/shared/loading-skeleton';
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading) return <FullPageLoader />;
+  if (!user) return null;
+
+  return (
+    <div className="min-h-screen mesh-bg">
+      <Sidebar />
+      <div className="ml-[280px] transition-all duration-300">
+        <Topbar />
+        <main className="p-6">
+          <Breadcrumb />
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}

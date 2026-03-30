@@ -1,0 +1,147 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "lecturas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "operarioId", "order": "ASCENDING" },
+        { "fieldPath": "fechaHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "lecturas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "fechaHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "lecturas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "rutaId", "order": "ASCENDING" },
+        { "fieldPath": "estadoValidacion", "order": "ASCENDING" },
+        { "fieldPath": "fechaHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medidores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "estadoLectura", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medidores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "clienteId", "order": "ASCENDING" },
+        { "fieldPath": "numeroMedidor", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "clientes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "estado", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "clientes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "nombreCompleto", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "asignaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "operarioId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "asignaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "estado", "order": "ASCENDING" },
+        { "fieldPath": "fechaAsignacion", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "departamentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "rutas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "zonas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "asignaciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "fechaAsignacion", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "usertype", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "provincias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "departamentoId", "order": "ASCENDING" },
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "distritos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "provinciaId", "order": "ASCENDING" },
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "zonas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "distritoId", "order": "ASCENDING" },
+        { "fieldPath": "activo", "order": "ASCENDING" },
+        { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
