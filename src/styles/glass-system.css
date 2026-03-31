@@ -313,3 +313,75 @@ html:not(.dark) [class*="bg-blue-500/"] {
   background-color: rgba(255, 255, 255, 0.04) !important;
   color: rgba(255, 255, 255, 0.3) !important;
 }
+
+/* ============================================
+   RESPONSIVE / MOBILE FIXES
+   ============================================ */
+
+/* Page headers: wrap title + buttons on small screens */
+@media (max-width: 640px) {
+  /* Make page header areas stackable */
+  main > .space-y-6 > div:first-child {
+    flex-wrap: wrap !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Form grids: single column on mobile */
+  .grid-cols-2,
+  .sm\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-3,
+  .sm\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .grid-cols-4,
+  .sm\:grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Glass cards reduce padding on mobile */
+  .p-5 { padding: 0.75rem !important; }
+  .p-7 { padding: 1rem !important; }
+
+  /* Detail page grid info: single column */
+  .grid.grid-cols-2 { grid-template-columns: 1fr !important; }
+
+  /* Buttons: smaller text on mobile */
+  button .text-sm { font-size: 0.75rem !important; }
+
+  /* Modal: full width on mobile */
+  [class*="max-w-lg"],
+  [class*="max-w-xl"],
+  [class*="max-w-2xl"] {
+    max-width: calc(100vw - 2rem) !important;
+  }
+
+  /* Title text sizes */
+  .text-2xl { font-size: 1.25rem !important; }
+  .text-xl { font-size: 1.1rem !important; }
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) and (min-width: 641px) {
+  .grid-cols-4,
+  .sm\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Fix touch scrolling for tables on iOS */
+.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Login page responsive */
+@media (max-width: 480px) {
+  .w-full.max-w-md {
+    max-width: calc(100vw - 2rem) !important;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+}

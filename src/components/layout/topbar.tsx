@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, Search, LogOut, User, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Bell, Search, LogOut, User, Moon, Sun, ChevronDown, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/lib/hooks/use-auth';
+import { useSidebar } from '@/lib/hooks/use-sidebar';
 import { getInitials } from '@/lib/utils/formatters';
 import CommandPalette from '@/components/shared/command-palette';
 import NotificationPanel from '@/components/shared/notification-panel';
@@ -13,6 +14,7 @@ export default function Topbar() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
+  const toggleSidebar = useSidebar((s) => s.toggle);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showPalette, setShowPalette] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -30,10 +32,19 @@ export default function Topbar() {
   }, []);
 
   return (<>
-    <header className="h-16 border-b border-black/[0.06] dark:border-white/10 bg-white/40 dark:bg-[#1a1a1a]/40 backdrop-blur-xl flex items-center justify-between px-6">
-      {/* Search */}
-      <div className="flex items-center gap-3 flex-1 max-w-md">
-        <div className="relative w-full">
+    <header className="sticky top-0 z-30 h-14 sm:h-16 border-b border-black/[0.06] dark:border-white/10 bg-white/40 dark:bg-[#1a1a1a]/40 backdrop-blur-xl flex items-center justify-between px-3 sm:px-6">
+      {/* Left: hamburger + search */}
+      <div className="flex items-center gap-2 flex-1 min-w-0">
+        {/* Mobile hamburger */}
+        <button
+          onClick={toggleSidebar}
+          className="p-2 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors lg:hidden flex-shrink-0"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
+        {/* Search */}
+        <div className="relative flex-1 max-w-md hidden sm:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-tertiary)]" />
           <input
             type="text"
@@ -55,37 +66,45 @@ export default function Topbar() {
             Ctrl+K
           </kbd>
         </div>
+
+        {/* Mobile search icon */}
+        <button
+          onClick={() => setShowPalette(true)}
+          className="p-2 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors sm:hidden flex-shrink-0"
+        >
+          <Search className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         {/* Theme toggle */}
         <button
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          className="p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
+          className="p-2 sm:p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
         >
-          {theme === 'dark' ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
+          {theme === 'dark' ? <Sun className="h-4 w-4 sm:h-[18px] sm:w-[18px]" /> : <Moon className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />}
         </button>
 
         {/* Notifications */}
         <button
           onClick={() => setShowNotifications(true)}
-          className="relative p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
+          className="relative p-2 sm:p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
         >
-          <Bell className="h-4.5 w-4.5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#FF453A] rounded-full" />
+          <Bell className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
+          <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 bg-[#FF453A] rounded-full" />
         </button>
 
         {/* User menu */}
-        <div className="relative ml-2">
+        <div className="relative ml-1 sm:ml-2">
           <button
             onClick={() => setShowUserMenu(!showUserMenu)}
-            className="flex items-center gap-2.5 p-1.5 pr-3 rounded-xl hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
+            className="flex items-center gap-1.5 sm:gap-2.5 p-1 sm:p-1.5 sm:pr-3 rounded-xl hover:bg-white/30 dark:hover:bg-white/10 transition-colors"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] flex items-center justify-center text-white text-[10px] sm:text-xs font-bold">
               {user ? getInitials(user.nombre, user.apellidos) : '?'}
             </div>
-            <div className="hidden sm:block text-left">
+            <div className="hidden md:block text-left">
               <p className="text-xs font-medium text-[var(--text-primary)] leading-tight">
                 {user?.nombre || 'Usuario'}
               </p>
@@ -93,7 +112,7 @@ export default function Topbar() {
                 {user?.usertype || 'Sin rol'}
               </p>
             </div>
-            <ChevronDown className="h-3.5 w-3.5 text-[var(--text-tertiary)]" />
+            <ChevronDown className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[var(--text-tertiary)] hidden sm:block" />
           </button>
 
           {/* Dropdown */}

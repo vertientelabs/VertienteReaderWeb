@@ -38,7 +38,7 @@ export default function Breadcrumb() {
   });
 
   return (
-    <nav className="flex items-center gap-1.5 text-sm mb-6">
+    <nav className="flex items-center gap-1.5 text-xs sm:text-sm mb-4 sm:mb-6 overflow-x-auto whitespace-nowrap">
       <Link
         href="/"
         className="text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors"
