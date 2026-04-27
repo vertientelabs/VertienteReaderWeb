@@ -12,6 +12,10 @@ import type {
   EstadoAsignacionType,
   EstadoPeriodoType,
   TipoEmpresaType,
+  TipoAnomaliaIAType,
+  SeveridadAnomaliaType,
+  EstadoAnomaliaIAType,
+  RecomendacionRiesgoType,
 } from './enums';
 
 // ============================================
@@ -330,4 +334,147 @@ export interface Configuracion {
   formatoExportacion: 'CSV' | 'JSON' | 'XML';
   zonaHoraria: string;
   moneda: string;
+}
+
+// ============================================
+// ANALYTICS - ANOMALIAS IA
+// ============================================
+
+export interface AnalyticsAnomalia {
+  id: string;
+  lecturaId: string;
+  medidorId: string;
+  clienteId: string;
+  zonaId: string;
+  rutaId?: string;
+  tipoAnomalia: TipoAnomaliaIAType;
+  severidad: SeveridadAnomaliaType;
+  scoreConfiabilidad: number;
+  consumoActual: number;
+  consumoEsperado: number;
+  desviacionPorcentual: number;
+  descripcion: string;
+  recomendacion: string;
+  estado: EstadoAnomaliaIAType;
+  revisadoPor?: string;
+  fechaRevision?: Timestamp;
+  resolucion?: string;
+  companiId: string;
+  periodo: string;
+  createdAt: Timestamp;
+}
+
+// ============================================
+// ANALYTICS - KPIs DIARIOS
+// ============================================
+
+export interface ZonaKpi {
+  zonaNombre: string;
+  totalMedidores: number;
+  medidoresLeidos: number;
+  consumoTotal: number;
+  anomalias: number;
+  anfEstimado?: number;
+}
+
+export interface OperarioKpi {
+  nombre: string;
+  lecturasRealizadas: number;
+  anomaliasDetectadas: number;
+  tiempoPromedio?: number;
+}
+
+export interface AnalyticsKpi {
+  id: string;
+  companiId: string;
+  fecha: string;
+  periodo: string;
+  aguaProducida?: number;
+  aguaFacturada: number;
+  anf: number;
+  totalMedidores: number;
+  medidoresLeidos: number;
+  porcentajeLectura: number;
+  lecturasConAnomalia: number;
+  lecturasValidadas: number;
+  zonaKpis: Record<string, ZonaKpi>;
+  operarioKpis: Record<string, OperarioKpi>;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// ============================================
+// ANALYTICS - PREDICCION DE CONSUMO
+// ============================================
+
+export interface PrediccionConsumo {
+  id: string;
+  medidorId: string;
+  clienteId: string;
+  zonaId: string;
+  periodo: string;
+  consumoPredicho: number;
+  consumoReal?: number;
+  rangoMinimo: number;
+  rangoMaximo: number;
+  confianza: number;
+  metodo: 'promedio_movil' | 'tendencia_lineal' | 'estacional' | 'mixto';
+  factores: {
+    promedioHistorico: number;
+    tendencia: number;
+    factorEstacional: number;
+    factorZona: number;
+  };
+  desviacionReal?: number;
+  companiId: string;
+  createdAt: Timestamp;
+}
+
+// ============================================
+// ANALYTICS - SCORE DE RIESGO
+// ============================================
+
+export interface ScoreRiesgo {
+  id: string;
+  medidorId: string;
+  clienteId: string;
+  zonaId: string;
+  scoreFraude: number;
+  scoreFuga: number;
+  scoreMedidorDeteriorado: number;
+  scoreGeneral: number;
+  factores: string[];
+  recomendacion: RecomendacionRiesgoType;
+  ultimaActualizacion: Timestamp;
+  companiId: string;
+}
+
+// ============================================
+// CONFIGURACION IA
+// ============================================
+
+export interface ConfiguracionIA {
+  id: string;
+  companiId: string;
+  umbrales: {
+    consumoAlto: number;
+    consumoBajo: number;
+    consumoCero: number;
+    variacionEstacional: number;
+    scoreRiesgoAlto: number;
+    scoreRiesgoCritico: number;
+  };
+  pesos: {
+    fraude: number;
+    fuga: number;
+    medidorDeteriorado: number;
+  };
+  alertas: {
+    emailHabilitado: boolean;
+    pushHabilitado: boolean;
+    destinatarios: string[];
+    frecuencia: 'inmediata' | 'diaria' | 'semanal';
+  };
+  updatedAt: Timestamp;
+  updatedBy: string;
 }

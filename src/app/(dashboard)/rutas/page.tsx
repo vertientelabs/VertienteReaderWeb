@@ -63,10 +63,10 @@ const columns: ColumnDef<Ruta, unknown>[] = [
     cell: ({ row }) => (
       <div className="flex items-center gap-1">
         <Link href={`/rutas/${row.original.id}`}>
-          <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4" />} />
+          <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4 text-[#0A84FF]" />} />
         </Link>
         <Link href={`/rutas/${row.original.id}/editar`}>
-          <GlassButton variant="ghost" size="sm" icon={<Pencil className="h-4 w-4" />} />
+          <GlassButton variant="ghost" size="sm" icon={<Pencil className="h-4 w-4 text-[#FF9F0A]" />} />
         </Link>
       </div>
     ),

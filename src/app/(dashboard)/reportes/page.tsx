@@ -193,14 +193,43 @@ export default function ReportesPage() {
         </GlassCard>
       )}
 
+      {/* IA Reports Section */}
+      <div>
+        <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">Reportes con IA</h2>
+        <p className="text-sm text-[var(--text-tertiary)] mb-4">
+          Reportes avanzados generados con analisis inteligente
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            { title: 'Reporte ANF por Sector', desc: 'Agua No Facturada con drill-down por zona y localidad.', icon: '💧', color: 'from-[#0A84FF] to-[#64D2FF]' },
+            { title: 'Reporte de Anomalias', desc: 'Anomalias detectadas con clasificacion y recomendaciones IA.', icon: '🔍', color: 'from-[#FF453A] to-[#FF9F0A]' },
+            { title: 'Prediccion vs Real', desc: 'Comparativa de consumo predicho vs real con precision del modelo.', icon: '📈', color: 'from-[#30D158] to-[#64D2FF]' },
+            { title: 'Eficiencia Micromedicion', desc: 'Indicadores de micromedicion, cobertura y operatividad.', icon: '⚡', color: 'from-[#FF9F0A] to-[#FFD60A]' },
+            { title: 'Medidores a Renovar', desc: 'Medidores candidatos a renovacion por antiguedad y deterioro.', icon: '🔧', color: 'from-[#BF5AF2] to-[#0A84FF]' },
+            { title: 'Score de Riesgo', desc: 'Conexiones con mayor riesgo de fraude, fuga o deterioro.', icon: '🛡️', color: 'from-[#FF453A] to-[#BF5AF2]' },
+          ].map((report) => (
+            <GlassCard key={report.title} className="cursor-pointer group">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${report.color} flex items-center justify-center mb-3 text-lg`}>
+                {report.icon}
+              </div>
+              <h3 className="font-semibold text-sm text-[var(--text-primary)] mb-1">{report.title}</h3>
+              <p className="text-xs text-[var(--text-tertiary)] leading-relaxed mb-3">{report.desc}</p>
+              <span className="text-xs font-medium text-[var(--accent)] group-hover:underline">
+                Proximamente
+              </span>
+            </GlassCard>
+          ))}
+        </div>
+      </div>
+
       {/* Info */}
       <GlassCard hover={false} variant="flat">
         <div className="flex items-start gap-3">
           <FileText className="h-5 w-5 text-[var(--text-tertiary)] mt-0.5" />
           <div className="text-xs text-[var(--text-tertiary)] space-y-1">
-            <p>Los reportes incluyen logo y membrete de la empresa configurados en Configuración.</p>
-            <p>Se generan automáticamente al cierre de cada periodo de facturación.</p>
-            <p>La generación de reportes PDF utiliza jsPDF + html2canvas para máxima compatibilidad.</p>
+            <p>Los reportes incluyen logo y membrete de la empresa configurados en Configuracion.</p>
+            <p>Se generan automaticamente al cierre de cada periodo de facturacion.</p>
+            <p>Los reportes con IA se alimentan de los resultados del motor de deteccion de anomalias y prediccion.</p>
           </div>
         </div>
       </GlassCard>

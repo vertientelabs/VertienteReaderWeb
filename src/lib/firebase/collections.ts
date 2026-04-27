@@ -21,3 +21,10 @@ export const periodosCol = collection(db, 'periodos');
 export const auditoriaCol = collection(db, 'auditoria');
 export const configuracionCol = collection(db, 'configuracion');
 export const incidenciasCol = collection(db, 'incidencias');
+
+// Colecciones de analytics / IA
+export const analyticsAnomaliasCol = collection(db, 'analytics_anomalias');
+export const analyticsKpisCol = collection(db, 'analytics_kpis');
+export const analyticsPrediccionesCol = collection(db, 'analytics_predicciones');
+export const analyticsScoresRiesgoCol = collection(db, 'analytics_scores_riesgo');
+export const configuracionIaCol = collection(db, 'configuracion_ia');

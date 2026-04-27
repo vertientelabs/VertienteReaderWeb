@@ -31,14 +31,14 @@ describe('constants', () => {
       });
     });
 
-    it('Dashboard es accesible por todos los roles', () => {
-      const dashboard = NAVIGATION_ITEMS.find(i => i.label === 'Dashboard');
-      expect(dashboard).toBeDefined();
-      expect(dashboard!.roles).toContain('root');
-      expect(dashboard!.roles).toContain('administrador');
-      expect(dashboard!.roles).toContain('supervisor');
-      expect(dashboard!.roles).toContain('operario');
-      expect(dashboard!.roles).toContain('lector');
+    it('Home es accesible por todos los roles', () => {
+      const home = NAVIGATION_ITEMS.find(i => i.label === 'Home');
+      expect(home).toBeDefined();
+      expect(home!.roles).toContain('root');
+      expect(home!.roles).toContain('administrador');
+      expect(home!.roles).toContain('supervisor');
+      expect(home!.roles).toContain('operario');
+      expect(home!.roles).toContain('lector');
     });
 
     it('Usuarios solo accesible por root y administrador', () => {

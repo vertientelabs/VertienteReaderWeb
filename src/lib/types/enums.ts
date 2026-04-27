@@ -101,3 +101,47 @@ export const EstadoPeriodo = {
 } as const;
 
 export type EstadoPeriodoType = (typeof EstadoPeriodo)[keyof typeof EstadoPeriodo];
+
+// ============================================
+// ANALYTICS / IA
+// ============================================
+
+export const TipoAnomaliaIA = {
+  CONSUMO_ALTO: 'consumo_alto',
+  CONSUMO_BAJO: 'consumo_bajo',
+  CONSUMO_CERO: 'consumo_cero',
+  RETROCESO: 'retroceso',
+  PATRON_ATIPICO: 'patron_atipico',
+  VARIACION_ESTACIONAL: 'variacion_estacional',
+} as const;
+
+export type TipoAnomaliaIAType = (typeof TipoAnomaliaIA)[keyof typeof TipoAnomaliaIA];
+
+export const SeveridadAnomalia = {
+  BAJA: 'baja',
+  MEDIA: 'media',
+  ALTA: 'alta',
+  CRITICA: 'critica',
+} as const;
+
+export type SeveridadAnomaliaType = (typeof SeveridadAnomalia)[keyof typeof SeveridadAnomalia];
+
+export const EstadoAnomaliaIA = {
+  DETECTADA: 'detectada',
+  EN_REVISION: 'en_revision',
+  CONFIRMADA: 'confirmada',
+  DESCARTADA: 'descartada',
+  RESUELTA: 'resuelta',
+} as const;
+
+export type EstadoAnomaliaIAType = (typeof EstadoAnomaliaIA)[keyof typeof EstadoAnomaliaIA];
+
+export const RecomendacionRiesgo = {
+  NINGUNA: 'ninguna',
+  MONITOREAR: 'monitorear',
+  INSPECCION: 'inspeccion',
+  CAMBIO_MEDIDOR: 'cambio_medidor',
+  CORTE: 'corte',
+} as const;
+
+export type RecomendacionRiesgoType = (typeof RecomendacionRiesgo)[keyof typeof RecomendacionRiesgo];

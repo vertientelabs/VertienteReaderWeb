@@ -105,7 +105,10 @@ export default function Sidebar() {
                   }
                 `}
               >
-                <Icon className={`h-5 w-5 flex-shrink-0 ${active ? 'text-[#0A84FF]' : ''}`} />
+                <Icon
+                  className="h-5 w-5 flex-shrink-0 transition-colors"
+                  style={{ color: active ? '#0A84FF' : item.color }}
+                />
                 <AnimatePresence>
                   {showLabel && (
                     <motion.span

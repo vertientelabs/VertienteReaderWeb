@@ -226,7 +226,7 @@ export default function IncidenciasPage() {
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <Link href={`/incidencias/${row.original.id}`}>
-            <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4" />} />
+            <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4 text-[#0A84FF]" />} />
           </Link>
         </div>
       ),

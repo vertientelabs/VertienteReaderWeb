@@ -79,8 +79,8 @@ interface BarChartProps {
   data: ChartDataPoint[];
   title?: string;
   height?: number;
-  colors?: [string, string];
-  labels?: [string, string];
+  colors?: string[];
+  labels?: string[];
 }
 
 export function GlassBarChart({

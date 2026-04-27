@@ -1,277 +1,347 @@
 'use client';
 
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
 import {
-  BookOpen,
+  ArrowRight,
   Clock,
-  CheckCircle2,
-  AlertTriangle,
-  Users,
-  TrendingUp,
-  Activity,
+  Sparkles,
+  Building2,
+  HardHat,
+  Pickaxe,
+  Droplets,
+  History,
 } from 'lucide-react';
 import GlassCard from '@/components/ui/glass-card';
 import GlassChip from '@/components/ui/glass-chip';
-import { GlassAreaChart } from '@/components/charts/consumption-chart';
+import GlassButton from '@/components/ui/glass-button';
 import { useAuth } from '@/lib/hooks/use-auth';
+import { useRecentActivity } from '@/lib/hooks/use-recent-activity';
+import { NAVIGATION_ITEMS } from '@/lib/constants';
+import type { UserRole } from '@/lib/types';
 
-const dailyData = [
-  { name: '01', value: 85 }, { name: '02', value: 120 }, { name: '03', value: 95 },
-  { name: '04', value: 145 }, { name: '05', value: 160 }, { name: '06', value: 110 },
-  { name: '07', value: 90 }, { name: '08', value: 175 }, { name: '09', value: 200 },
-  { name: '10', value: 155 }, { name: '11', value: 180 }, { name: '12', value: 210 },
-  { name: '13', value: 190 }, { name: '14', value: 165 }, { name: '15', value: 220 },
-];
+const QUICK_ACTIONS_BY_ROLE: Record<UserRole, string[]> = {
+  root: [
+    '/lecturas',
+    '/asignaciones',
+    '/dashboard-ejecutivo',
+    '/dashboard-anf',
+    '/anomalias',
+    '/usuarios',
+    '/empresas',
+    '/configuracion',
+  ],
+  administrador: [
+    '/lecturas',
+    '/asignaciones',
+    '/dashboard-ejecutivo',
+    '/dashboard-anf',
+    '/anomalias',
+    '/usuarios',
+    '/incidencias',
+    '/reportes',
+  ],
+  supervisor: [
+    '/lecturas',
+    '/asignaciones',
+    '/dashboard-anf',
+    '/dashboard-operativo',
+    '/anomalias',
+    '/incidencias',
+    '/rutas',
+    '/reportes',
+  ],
+  operario: ['/lecturas', '/reportes'],
+  lector: ['/lecturas', '/clientes', '/medidores', '/reportes'],
+};
 
-const kpis = [
-  {
-    title: 'Lecturas del Periodo',
-    value: '2,847',
-    subtitle: '+124 hoy',
-    icon: BookOpen,
-    color: 'from-[#0A84FF] to-[#64D2FF]',
-    trend: '+12.5%',
-    trendUp: true,
-  },
-  {
-    title: 'Pendientes',
-    value: '1,153',
-    subtitle: 'de 4,000 medidores',
-    icon: Clock,
-    color: 'from-[#FF9F0A] to-[#FFD60A]',
-    trend: '-8.3%',
-    trendUp: true,
-  },
-  {
-    title: 'Completadas',
-    value: '71.2%',
-    subtitle: 'Avance global',
-    icon: CheckCircle2,
-    color: 'from-[#30D158] to-[#64D2FF]',
-    trend: '+5.2%',
-    trendUp: true,
-  },
-  {
-    title: 'Anomalías',
-    value: '23',
-    subtitle: 'Detectadas este periodo',
-    icon: AlertTriangle,
-    color: 'from-[#FF453A] to-[#FF9F0A]',
-    trend: '+3',
-    trendUp: false,
-  },
-  {
-    title: 'Operarios Activos',
-    value: '12',
-    subtitle: 'En campo ahora',
-    icon: Users,
-    color: 'from-[#BF5AF2] to-[#0A84FF]',
-    trend: '',
-    trendUp: true,
-  },
-  {
-    title: 'Consumo Promedio',
-    value: '18.4 m³',
-    subtitle: 'Este periodo',
-    icon: TrendingUp,
-    color: 'from-[#30D158] to-[#BF5AF2]',
-    trend: '+2.1%',
-    trendUp: true,
-  },
-];
+const ROLE_LABEL: Record<UserRole, string> = {
+  root: 'Root',
+  administrador: 'Administrador',
+  supervisor: 'Supervisor',
+  operario: 'Operario',
+  lector: 'Lector',
+};
 
-const recentActivity = [
-  { action: 'Lectura registrada', detail: 'Med. 00234 - Zona Norte A', time: 'Hace 2 min', type: 'success' as const },
-  { action: 'Anomalía detectada', detail: 'Consumo alto - Cliente #1082', time: 'Hace 15 min', type: 'danger' as const },
-  { action: 'Ruta completada', detail: 'Ruta 03 - Op. Juan Pérez', time: 'Hace 30 min', type: 'primary' as const },
-  { action: 'Lectura validada', detail: 'Lote de 45 lecturas - Zona Sur', time: 'Hace 1 hora', type: 'success' as const },
-  { action: 'Asignación creada', detail: 'Ruta 07 → Carlos Rojas', time: 'Hace 2 horas', type: 'primary' as const },
-];
-
-const topOperarios = [
-  { nombre: 'Juan Pérez', lecturas: 342, porcentaje: 95 },
-  { nombre: 'María García', lecturas: 298, porcentaje: 87 },
-  { nombre: 'Carlos Rojas', lecturas: 276, porcentaje: 81 },
-  { nombre: 'Ana Torres', lecturas: 251, porcentaje: 74 },
-  { nombre: 'Pedro Sánchez', lecturas: 223, porcentaje: 66 },
-];
+const ROLE_INTRO: Record<UserRole, string> = {
+  root: 'Acceso total al sistema. Aqui tienes los modulos mas usados y tu actividad reciente.',
+  administrador: 'Gestiona usuarios, empresas y monitorea indicadores ejecutivos desde aqui.',
+  supervisor: 'Supervisa operaciones, asignaciones y anomalias desde tu pagina de inicio.',
+  operario: 'Continua donde lo dejaste y accede rapido a tus lecturas y reportes.',
+  lector: 'Accesos directos a clientes, medidores y registro de lecturas.',
+};
 
 const container = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.06 },
-  },
+  show: { opacity: 1, transition: { staggerChildren: 0.04 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 15 },
+  hidden: { opacity: 0, y: 12 },
   show: { opacity: 1, y: 0 },
 };
 
-export default function DashboardPage() {
+function timeAgo(ts: number): string {
+  const diff = Math.max(0, Date.now() - ts);
+  const sec = Math.floor(diff / 1000);
+  if (sec < 60) return 'hace unos segundos';
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `hace ${min} min`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `hace ${hr} h`;
+  const days = Math.floor(hr / 24);
+  if (days < 30) return `hace ${days} d`;
+  return new Date(ts).toLocaleDateString();
+}
+
+export default function HomePage() {
   const { user } = useAuth();
+  const role = user?.usertype;
+  const { items: recent } = useRecentActivity(user?.id);
+
+  const quickActions = useMemo(() => {
+    if (!role) return [];
+    const hrefs = QUICK_ACTIONS_BY_ROLE[role] ?? [];
+    return hrefs
+      .map((href) => NAVIGATION_ITEMS.find((n) => n.href === href))
+      .filter((n): n is (typeof NAVIGATION_ITEMS)[number] => Boolean(n))
+      .filter((n) => role && (n.roles as readonly string[]).includes(role));
+  }, [role]);
+
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Buenos dias';
+    if (hour < 19) return 'Buenas tardes';
+    return 'Buenas noches';
+  }, []);
 
   return (
-    <div className="space-y-6">
-      {/* Welcome */}
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-          Bienvenido, {user?.nombre || 'Usuario'}
-        </h1>
-        <p className="text-sm text-[var(--text-tertiary)] mt-1">
-          Periodo actual: Marzo 2026 | Panel de control general
-        </p>
-      </div>
-
-      {/* KPIs */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
-        {kpis.map((kpi) => {
-          const Icon = kpi.icon;
-          return (
-            <motion.div key={kpi.title} variants={item}>
-              <GlassCard className="relative overflow-hidden">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-[var(--text-tertiary)] uppercase tracking-wide">
-                      {kpi.title}
-                    </p>
-                    <p className="text-3xl font-bold text-[var(--text-primary)] mt-2">{kpi.value}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-[var(--text-tertiary)]">{kpi.subtitle}</span>
-                      {kpi.trend && (
-                        <GlassChip
-                          label={kpi.trend}
-                          variant={kpi.trendUp ? 'success' : 'danger'}
-                        />
-                      )}
-                    </div>
-                  </div>
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${kpi.color} flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="h-5.5 w-5.5 text-white" />
-                  </div>
-                </div>
-              </GlassCard>
-            </motion.div>
-          );
-        })}
+    <div className="space-y-4 sm:space-y-6">
+      {/* Welcome banner */}
+      <motion.div initial="hidden" animate="show" variants={container}>
+        <motion.div variants={item}>
+          <GlassCard hover={false} padding="lg" className="relative overflow-hidden">
+            <div
+              aria-hidden
+              className="absolute -top-20 -right-20 w-72 h-72 rounded-full opacity-20 blur-3xl"
+              style={{ background: 'radial-gradient(circle, #0A84FF 0%, transparent 70%)' }}
+            />
+            <div
+              aria-hidden
+              className="absolute -bottom-24 -left-16 w-72 h-72 rounded-full opacity-15 blur-3xl"
+              style={{ background: 'radial-gradient(circle, #BF5AF2 0%, transparent 70%)' }}
+            />
+            <div className="relative flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-[#0A84FF]" />
+                <span className="text-xs font-medium text-[var(--text-tertiary)]">
+                  Pagina de inicio
+                </span>
+                {role && (
+                  <GlassChip
+                    label={ROLE_LABEL[role]}
+                    variant="primary"
+                    className="ml-1"
+                  />
+                )}
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)]">
+                {greeting}, {user?.nombre || 'Usuario'}
+              </h1>
+              <p className="text-sm text-[var(--text-secondary)] max-w-2xl">
+                {role ? ROLE_INTRO[role] : 'Bienvenido a Vertiente Reader.'}
+              </p>
+            </div>
+          </GlassCard>
+        </motion.div>
       </motion.div>
 
-      {/* Charts row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Progress chart placeholder */}
-        <motion.div variants={item} initial="hidden" animate="show" className="lg:col-span-2">
-          <GlassCard hover={false}>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold text-[var(--text-primary)]">Avance de Lecturas</h3>
-                <p className="text-xs text-[var(--text-tertiary)]">Lecturas completadas por día</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <GlassChip label="Este periodo" variant="primary" />
-              </div>
-            </div>
-            <GlassAreaChart data={dailyData} color="#0A84FF" height={240} />
-          </GlassCard>
+      {/* Quick actions */}
+      <motion.div initial="hidden" animate="show" variants={container} className="space-y-3">
+        <motion.div variants={item} className="flex items-center justify-between px-1">
+          <h2 className="text-sm font-semibold text-[var(--text-primary)]">
+            Accesos directos
+          </h2>
+          <span className="text-xs text-[var(--text-tertiary)]">
+            Personalizado para tu rol
+          </span>
         </motion.div>
 
-        {/* Progress gauge */}
-        <motion.div variants={item} initial="hidden" animate="show">
-          <GlassCard hover={false} className="h-full">
-            <h3 className="font-semibold text-[var(--text-primary)] mb-4">Avance Global</h3>
-            <div className="flex flex-col items-center justify-center h-52">
-              {/* Circular progress */}
-              <div className="relative w-36 h-36">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="52" fill="none" className="stroke-black/10 dark:stroke-white/10" strokeWidth="10" />
-                  <circle
-                    cx="60" cy="60" r="52" fill="none"
-                    stroke="url(#gradient)" strokeWidth="10"
-                    strokeLinecap="round"
-                    strokeDasharray={`${2 * Math.PI * 52}`}
-                    strokeDashoffset={`${2 * Math.PI * 52 * (1 - 0.712)}`}
-                  />
-                  <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#0A84FF" />
-                      <stop offset="100%" stopColor="#30D158" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold text-[var(--text-primary)]">71.2%</span>
-                  <span className="text-xs text-[var(--text-tertiary)]">completado</span>
-                </div>
-              </div>
-              <div className="flex gap-4 mt-4 text-xs text-[var(--text-tertiary)]">
-                <span>2,847 leídos</span>
-                <span>|</span>
-                <span>1,153 pendientes</span>
-              </div>
-            </div>
-          </GlassCard>
-        </motion.div>
-      </div>
-
-      {/* Bottom row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Top Operarios */}
-        <motion.div variants={item} initial="hidden" animate="show">
-          <GlassCard hover={false}>
-            <h3 className="font-semibold text-[var(--text-primary)] mb-4">Top Operarios</h3>
-            <div className="space-y-3">
-              {topOperarios.map((op, idx) => (
-                <div key={op.nombre} className="flex items-center gap-3">
-                  <span className="w-6 text-xs font-bold text-[var(--text-tertiary)] text-right">#{idx + 1}</span>
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] flex items-center justify-center text-white text-xs font-bold">
-                    {op.nombre.split(' ').map((n) => n[0]).join('')}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[var(--text-primary)] truncate">{op.nombre}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <div className="flex-1 h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+        {quickActions.length === 0 ? (
+          <motion.div variants={item}>
+            <GlassCard hover={false} padding="md">
+              <p className="text-sm text-[var(--text-tertiary)]">
+                No hay accesos directos disponibles para tu rol.
+              </p>
+            </GlassCard>
+          </motion.div>
+        ) : (
+          <motion.div
+            variants={container}
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
+          >
+            {quickActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <motion.div key={action.href} variants={item}>
+                  <Link href={action.href} className="block h-full">
+                    <GlassCard padding="md" className="h-full group cursor-pointer">
+                      <div className="flex items-start justify-between mb-3">
                         <div
-                          className="h-full bg-gradient-to-r from-[#0A84FF] to-[#30D158] rounded-full transition-all duration-500"
-                          style={{ width: `${op.porcentaje}%` }}
-                        />
+                          className="flex items-center justify-center w-10 h-10 rounded-xl"
+                          style={{
+                            backgroundColor: `${action.color}1F`,
+                            color: action.color,
+                          }}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
                       </div>
-                      <span className="text-xs text-[var(--text-tertiary)] w-8">{op.porcentaje}%</span>
-                    </div>
-                  </div>
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">{op.lecturas}</span>
-                </div>
-              ))}
+                      <p className="text-sm font-semibold text-[var(--text-primary)]">
+                        {action.label}
+                      </p>
+                    </GlassCard>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
+      </motion.div>
+
+      {/* Recent activity + Vertiente Labs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Recent activity */}
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={item}
+          className="lg:col-span-2"
+        >
+          <GlassCard hover={false} padding="md" className="h-full">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <History className="h-4 w-4 text-[#0A84FF]" />
+                <h3 className="font-semibold text-[var(--text-primary)]">
+                  Continua donde lo dejaste
+                </h3>
+              </div>
+              <span className="text-xs text-[var(--text-tertiary)]">
+                Ultimas paginas visitadas
+              </span>
             </div>
+
+            {recent.length === 0 ? (
+              <div className="py-8 flex flex-col items-center text-center gap-2">
+                <Clock className="h-6 w-6 text-[var(--text-tertiary)]" />
+                <p className="text-sm text-[var(--text-secondary)]">
+                  Aun no hay actividad reciente.
+                </p>
+                <p className="text-xs text-[var(--text-tertiary)]">
+                  A medida que navegues por la aplicacion veras aqui tus
+                  ultimas pantallas.
+                </p>
+              </div>
+            ) : (
+              <ul className="divide-y divide-black/[0.06] dark:divide-white/[0.06]">
+                {recent.map((entry) => (
+                  <li key={entry.href}>
+                    <Link
+                      href={entry.href}
+                      className="flex items-center gap-3 py-2.5 group"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#0A84FF] flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-[var(--text-primary)] truncate group-hover:text-[#0A84FF] transition-colors">
+                          {entry.label}
+                        </p>
+                        <p className="text-xs text-[var(--text-tertiary)] truncate">
+                          {entry.href}
+                        </p>
+                      </div>
+                      <span className="text-xs text-[var(--text-tertiary)] flex-shrink-0">
+                        {timeAgo(entry.visitedAt)}
+                      </span>
+                      <ArrowRight className="h-4 w-4 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </GlassCard>
         </motion.div>
 
-        {/* Recent Activity */}
-        <motion.div variants={item} initial="hidden" animate="show">
-          <GlassCard hover={false}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-[var(--text-primary)]">Actividad Reciente</h3>
-              <Activity className="h-4 w-4 text-[var(--text-tertiary)]" />
-            </div>
-            <div className="space-y-3">
-              {recentActivity.map((act, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <div className={`w-2 h-2 mt-1.5 rounded-full flex-shrink-0 ${
-                    act.type === 'success' ? 'bg-[#30D158]' :
-                    act.type === 'danger' ? 'bg-[#FF453A]' :
-                    'bg-[#0A84FF]'
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[var(--text-primary)]">{act.action}</p>
-                    <p className="text-xs text-[var(--text-tertiary)] truncate">{act.detail}</p>
-                  </div>
-                  <span className="text-xs text-[var(--text-tertiary)] flex-shrink-0">{act.time}</span>
-                </div>
-              ))}
+        {/* Vertiente Labs commercial reference */}
+        <motion.div initial="hidden" animate="show" variants={item}>
+          <GlassCard
+            variant="elevated"
+            hover={false}
+            padding="lg"
+            className="h-full relative overflow-hidden"
+          >
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-[0.07]"
+              style={{
+                background:
+                  'linear-gradient(135deg, #0A84FF 0%, #30D158 50%, #FF9F0A 100%)',
+              }}
+            />
+            <div className="relative flex flex-col h-full">
+              <div className="mb-4 inline-flex rounded-xl overflow-hidden bg-[#0a0a0a] px-3 py-2 self-start">
+                <Image
+                  src="/assets/logo_vertientelabs.png"
+                  alt="Vertiente Labs"
+                  width={160}
+                  height={36}
+                  className="h-8 w-auto object-contain"
+                  priority
+                />
+              </div>
+
+              <h3 className="text-base font-bold text-[var(--text-primary)] leading-snug">
+                Vertiente Reader es parte de la suite Vertiente Labs
+              </h3>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
+                Desarrollamos software especializado para el control y gestion
+                de operaciones en empresas de servicios publicos, construccion
+                y mineria.
+              </p>
+
+              <ul className="mt-4 space-y-2">
+                <li className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  <Droplets className="h-3.5 w-3.5 text-[#0A84FF] flex-shrink-0" />
+                  Servicios publicos: agua, energia, saneamiento
+                </li>
+                <li className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  <HardHat className="h-3.5 w-3.5 text-[#FF9F0A] flex-shrink-0" />
+                  Construccion: avance, valorizaciones, control de obra
+                </li>
+                <li className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  <Pickaxe className="h-3.5 w-3.5 text-[#BF5AF2] flex-shrink-0" />
+                  Mineria: produccion, seguridad, trazabilidad
+                </li>
+              </ul>
+
+              <div className="mt-auto pt-4">
+                <a
+                  href="https://vertientelabs.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-block"
+                >
+                  <GlassButton
+                    variant="secondary"
+                    size="sm"
+                    icon={<Building2 className="h-4 w-4" />}
+                  >
+                    Conoce Vertiente Labs
+                  </GlassButton>
+                </a>
+              </div>
             </div>
           </GlassCard>
         </motion.div>

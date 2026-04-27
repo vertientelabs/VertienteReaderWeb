@@ -20,7 +20,17 @@ const routeLabels: Record<string, string> = {
   configuracion: 'Configuración',
   auditoria: 'Auditoría',
   incidencias: 'Incidencias',
+  anomalias: 'Anomalias IA',
+  predicciones: 'Predicciones',
+  riesgos: 'Riesgos',
+  'dashboard-anf': 'Panel ANF',
+  'dashboard-operativo': 'Panel Operativo',
+  'dashboard-ejecutivo': 'Panel Ejecutivo',
+  ia: 'Configuracion IA',
+  optimizar: 'Optimizar',
+  sugerencias: 'Sugerencias',
   nuevo: 'Nuevo',
+  seed: 'Generador de Datos',
 };
 
 export default function Breadcrumb() {

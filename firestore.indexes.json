@@ -12,6 +12,14 @@
       "collectionGroup": "lecturas",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "clienteId", "order": "ASCENDING" },
+        { "fieldPath": "fechaHora", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "lecturas",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "zonaId", "order": "ASCENDING" },
         { "fieldPath": "fechaHora", "order": "DESCENDING" }
       ]
@@ -140,6 +148,161 @@
         { "fieldPath": "distritoId", "order": "ASCENDING" },
         { "fieldPath": "activo", "order": "ASCENDING" },
         { "fieldPath": "nombre", "order": "ASCENDING" }
+      ]
+    }
+    ,
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "tipoAnomalia", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "severidad", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "estado", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "clienteId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "medidorId", "order": "ASCENDING" },
+        { "fieldPath": "estado", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_anomalias",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "estado", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_kpis",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_kpis",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "fecha", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_scores_riesgo",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "scoreGeneral", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_scores_riesgo",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "scoreGeneral", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_predicciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "confianza", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_predicciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "periodo", "order": "ASCENDING" },
+        { "fieldPath": "confianza", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_predicciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "zonaId", "order": "ASCENDING" },
+        { "fieldPath": "confianza", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "analytics_predicciones",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companiId", "order": "ASCENDING" },
+        { "fieldPath": "medidorId", "order": "ASCENDING" },
+        { "fieldPath": "confianza", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "lecturas",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "medidorId", "order": "ASCENDING" },
+        { "fieldPath": "fechaHora", "order": "DESCENDING" }
       ]
     }
   ],

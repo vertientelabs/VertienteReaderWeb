@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
+import { useTrackPageVisit } from '@/lib/hooks/use-recent-activity';
 import Sidebar from '@/components/layout/sidebar';
 import Topbar from '@/components/layout/topbar';
 import Breadcrumb from '@/components/layout/breadcrumb';
@@ -13,6 +14,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const { user, loading } = useAuth();
   const router = useRouter();
   const collapsed = useSidebar((s) => s.collapsed);
+
+  useTrackPageVisit(user?.id);
 
   useEffect(() => {
     if (!loading && !user) {

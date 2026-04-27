@@ -70,10 +70,10 @@ const columns: ColumnDef<ClienteRow, unknown>[] = [
       return (
         <div className="flex items-center gap-1">
           <Link href={`/clientes/${cliente.id}`}>
-            <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4" />} />
+            <GlassButton variant="ghost" size="sm" icon={<Eye className="h-4 w-4 text-[#0A84FF]" />} />
           </Link>
           <Link href={`/clientes/${cliente.id}/editar`}>
-            <GlassButton variant="ghost" size="sm" icon={<Pencil className="h-4 w-4" />} />
+            <GlassButton variant="ghost" size="sm" icon={<Pencil className="h-4 w-4 text-[#FF9F0A]" />} />
           </Link>
         </div>
       );

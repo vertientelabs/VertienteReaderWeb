@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   useEffect(() => {
     if (!loading && user) {
-      router.replace('/clientes');
+      router.replace('/');
     }
   }, [user, loading, router]);
 
