@@ -1,14 +1,41 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, ChevronDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NAVIGATION_ITEMS, APP_NAME } from '@/lib/constants';
+import {
+  NAVIGATION_HOME,
+  NAVIGATION_GROUPS,
+  APP_NAME,
+  type NavItem,
+  type NavGroup,
+} from '@/lib/constants';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
 import GlassTooltip from '@/components/ui/glass-tooltip';
+
+const STORAGE_KEY = 'vrw:sidebar:groups';
+
+function readExpanded(): Record<string, boolean> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeExpanded(state: Record<string, boolean>) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    /* ignore */
+  }
+}
 
 export default function Sidebar() {
   const { open, close, collapsed, setCollapsed } = useSidebar();
@@ -16,16 +43,104 @@ export default function Sidebar() {
   const { user } = useAuth();
   const userRole = user?.usertype;
 
-  const filteredNav = NAVIGATION_ITEMS.filter(
-    (item) => userRole && (item.roles as readonly string[]).includes(userRole)
-  );
+  // Per-group expand/collapse state, persisted in localStorage.
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const stored = readExpanded();
+    // Default: all groups expanded the first time.
+    const initial: Record<string, boolean> = {};
+    NAVIGATION_GROUPS.forEach((g) => {
+      initial[g.id] = stored[g.id] ?? true;
+    });
+    setExpanded(initial);
+    setHydrated(true);
+  }, []);
+
+  const toggleGroup = (id: string) => {
+    setExpanded((prev) => {
+      const next = { ...prev, [id]: !prev[id] };
+      writeExpanded(next);
+      return next;
+    });
+  };
+
+  const filterItems = (items: readonly NavItem[]) =>
+    items.filter((i) => userRole && i.roles.includes(userRole));
+
+  const filteredGroups: { group: NavGroup; items: readonly NavItem[] }[] = NAVIGATION_GROUPS
+    .map((g) => ({ group: g, items: filterItems(g.items) }))
+    .filter(({ items }) => items.length > 0);
+
+  const homeVisible =
+    userRole && NAVIGATION_HOME.roles.includes(userRole) ? NAVIGATION_HOME : null;
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
 
+  const groupHasActive = (items: readonly NavItem[]) =>
+    items.some((i) => isActive(i.href));
+
   const sidebarWidth = collapsed ? 'w-[72px]' : 'w-[280px]';
+  const isIconOnly = collapsed && !open;
+
+  const renderItem = (item: NavItem, indent = false) => {
+    const active = isActive(item.href);
+    const Icon = item.icon;
+    const showLabel = !collapsed || open;
+
+    const linkContent = (
+      <Link
+        key={item.href}
+        href={item.href}
+        onClick={close}
+        className={`
+          flex items-center gap-3 ${indent && showLabel ? 'pl-9 pr-3' : 'px-3'} py-2.5 rounded-xl
+          transition-all duration-200
+          group relative
+          ${active
+            ? 'bg-[#0A84FF]/12 text-[#0A84FF]'
+            : 'text-[var(--text-secondary)] hover:bg-white/40 dark:hover:bg-white/[0.06] hover:text-[var(--text-primary)]'
+          }
+        `}
+      >
+        <Icon
+          className="h-5 w-5 flex-shrink-0 transition-colors"
+          style={{ color: active ? '#0A84FF' : item.color }}
+        />
+        <AnimatePresence>
+          {showLabel && (
+            <motion.span
+              initial={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: 'auto' }}
+              exit={{ opacity: 0, width: 0 }}
+              className="text-sm font-medium whitespace-nowrap overflow-hidden"
+            >
+              {item.label}
+            </motion.span>
+          )}
+        </AnimatePresence>
+        {active && (
+          <motion.div
+            layoutId="sidebar-active"
+            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#0A84FF] rounded-r-full"
+          />
+        )}
+      </Link>
+    );
+
+    if (isIconOnly) {
+      return (
+        <GlassTooltip key={item.href} content={item.label} position="right">
+          {linkContent}
+        </GlassTooltip>
+      );
+    }
+    return linkContent;
+  };
 
   return (
     <>
@@ -51,7 +166,6 @@ export default function Sidebar() {
           transition-all duration-300 ease-in-out
           flex flex-col
           ${sidebarWidth}
-          ${/* Mobile: hidden by default, slide in when open */''}
           max-lg:-translate-x-full max-lg:w-[280px]
           ${open ? 'max-lg:translate-x-0' : ''}
         `}
@@ -74,7 +188,6 @@ export default function Sidebar() {
             )}
           </AnimatePresence>
 
-          {/* Mobile close button */}
           <button
             onClick={close}
             className="ml-auto p-1 rounded-lg text-[var(--text-tertiary)] hover:text-[var(--text-primary)] lg:hidden"
@@ -85,60 +198,80 @@ export default function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          {filteredNav.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            const showLabel = !collapsed || open;
+          {/* Home (siempre arriba) */}
+          {homeVisible && renderItem(homeVisible)}
 
-            const linkContent = (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={close}
-                className={`
-                  flex items-center gap-3 px-3 py-2.5 rounded-xl
-                  transition-all duration-200
-                  group relative
-                  ${active
-                    ? 'bg-[#0A84FF]/12 text-[#0A84FF]'
-                    : 'text-[var(--text-secondary)] hover:bg-white/40 dark:hover:bg-white/[0.06] hover:text-[var(--text-primary)]'
-                  }
-                `}
-              >
-                <Icon
-                  className="h-5 w-5 flex-shrink-0 transition-colors"
-                  style={{ color: active ? '#0A84FF' : item.color }}
-                />
-                <AnimatePresence>
-                  {showLabel && (
-                    <motion.span
-                      initial={{ opacity: 0, width: 0 }}
-                      animate={{ opacity: 1, width: 'auto' }}
-                      exit={{ opacity: 0, width: 0 }}
-                      className="text-sm font-medium whitespace-nowrap overflow-hidden"
-                    >
-                      {item.label}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-                {active && (
-                  <motion.div
-                    layoutId="sidebar-active"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#0A84FF] rounded-r-full"
-                  />
-                )}
-              </Link>
-            );
+          {/* Grupos */}
+          {filteredGroups.map(({ group, items }) => {
+            const GroupIcon = group.icon;
+            const isOpen = isIconOnly ? true : (hydrated ? expanded[group.id] !== false : true);
+            const hasActive = groupHasActive(items);
 
-            if (collapsed && !open) {
+            // Modo icon-only: sin headers de grupo, solo items con divider sutil entre grupos.
+            if (isIconOnly) {
               return (
-                <GlassTooltip key={item.href} content={item.label} position="right">
-                  {linkContent}
-                </GlassTooltip>
+                <div key={group.id} className="space-y-1 pt-2 first:pt-0">
+                  <div className="flex items-center justify-center py-1">
+                    <GlassTooltip content={group.label} position="right">
+                      <div
+                        className="flex items-center justify-center w-9 h-6 rounded-md text-[var(--text-tertiary)]"
+                        aria-label={group.label}
+                      >
+                        <GroupIcon className="h-3.5 w-3.5" style={{ color: group.color }} />
+                      </div>
+                    </GlassTooltip>
+                  </div>
+                  {items.map((it) => renderItem(it))}
+                </div>
               );
             }
 
-            return linkContent;
+            return (
+              <div key={group.id} className="pt-2 first:pt-0">
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(group.id)}
+                  className={`
+                    w-full flex items-center gap-3 px-3 py-2 rounded-xl
+                    text-xs font-semibold uppercase tracking-wide
+                    transition-all duration-200
+                    ${hasActive
+                      ? 'text-[var(--text-primary)]'
+                      : 'text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]'
+                    }
+                    hover:bg-white/40 dark:hover:bg-white/[0.04]
+                  `}
+                  aria-expanded={isOpen}
+                  aria-controls={`nav-group-${group.id}`}
+                >
+                  <GroupIcon
+                    className="h-4 w-4 flex-shrink-0"
+                    style={{ color: group.color }}
+                  />
+                  <span className="flex-1 text-left">{group.label}</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-200 ${isOpen ? '' : '-rotate-90'}`}
+                  />
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      id={`nav-group-${group.id}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2, ease: 'easeInOut' }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-1 pt-1">
+                        {items.map((it) => renderItem(it, true))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            );
           })}
         </nav>
 

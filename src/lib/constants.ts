@@ -19,160 +19,231 @@ import {
   Droplets,
   Activity,
   Crown,
+  Briefcase,
+  PieChart,
+  ShieldCheck,
+  Sliders,
+  type LucideIcon,
 } from 'lucide-react';
 
 export const APP_NAME = 'Vertiente Reader';
 export const APP_DESCRIPTION = 'Sistema de Gestión de Lectura de Medidores de Agua';
 
-export const NAVIGATION_ITEMS = [
+export type NavItem = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  color: string;
+  roles: readonly string[];
+};
+
+export type NavGroup = {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  color: string;
+  items: readonly NavItem[];
+};
+
+export const NAVIGATION_HOME: NavItem = {
+  label: 'Home',
+  href: '/',
+  icon: Home,
+  color: '#0A84FF',
+  roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
+};
+
+export const NAVIGATION_GROUPS: readonly NavGroup[] = [
   {
-    label: 'Home',
-    href: '/',
-    icon: Home,
+    id: 'operaciones',
+    label: 'Operaciones',
+    icon: Briefcase,
     color: '#0A84FF',
-    roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
+    items: [
+      {
+        label: 'Clientes',
+        href: '/clientes',
+        icon: Users,
+        color: '#34C759',
+        roles: ['root', 'administrador', 'supervisor', 'lector'],
+      },
+      {
+        label: 'Medidores',
+        href: '/medidores',
+        icon: Gauge,
+        color: '#FF9F0A',
+        roles: ['root', 'administrador', 'supervisor', 'lector'],
+      },
+      {
+        label: 'Zonas',
+        href: '/zonas',
+        icon: MapPin,
+        color: '#30D158',
+        roles: ['root', 'administrador', 'supervisor', 'lector'],
+      },
+      {
+        label: 'Rutas',
+        href: '/rutas',
+        icon: Route,
+        color: '#BF5AF2',
+        roles: ['root', 'administrador', 'supervisor', 'lector'],
+      },
+      {
+        label: 'Asignaciones',
+        href: '/asignaciones',
+        icon: ClipboardList,
+        color: '#5E5CE6',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Lecturas',
+        href: '/lecturas',
+        icon: ScanLine,
+        color: '#32ADE6',
+        roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
+      },
+      {
+        label: 'Exportar',
+        href: '/integracion/exportar',
+        icon: Download,
+        color: '#8E8E93',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+    ],
   },
   {
-    label: 'Clientes',
-    href: '/clientes',
-    icon: Users,
-    color: '#34C759',
-    roles: ['root', 'administrador', 'supervisor', 'lector'],
-  },
-  {
-    label: 'Medidores',
-    href: '/medidores',
-    icon: Gauge,
-    color: '#FF9F0A',
-    roles: ['root', 'administrador', 'supervisor', 'lector'],
-  },
-  {
-    label: 'Zonas',
-    href: '/zonas',
-    icon: MapPin,
-    color: '#30D158',
-    roles: ['root', 'administrador', 'supervisor', 'lector'],
-  },
-  {
-    label: 'Rutas',
-    href: '/rutas',
-    icon: Route,
-    color: '#BF5AF2',
-    roles: ['root', 'administrador', 'supervisor', 'lector'],
-  },
-  {
-    label: 'Asignaciones',
-    href: '/asignaciones',
-    icon: ClipboardList,
-    color: '#5E5CE6',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Lecturas',
-    href: '/lecturas',
-    icon: ScanLine,
-    color: '#32ADE6',
-    roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
-  },
-  {
-    label: 'Dashboards',
-    href: '/lecturas/dashboard',
-    icon: BarChart3,
+    id: 'estadisticas',
+    label: 'Estadisticas',
+    icon: PieChart,
     color: '#0A84FF',
-    roles: ['root', 'administrador', 'supervisor'],
+    items: [
+      {
+        label: 'Dashboards',
+        href: '/lecturas/dashboard',
+        icon: BarChart3,
+        color: '#0A84FF',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Reportes',
+        href: '/reportes',
+        icon: FileText,
+        color: '#30B0C7',
+        roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
+      },
+    ],
   },
   {
-    label: 'Exportar',
-    href: '/integracion/exportar',
-    icon: Download,
-    color: '#8E8E93',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Reportes',
-    href: '/reportes',
-    icon: FileText,
-    color: '#30B0C7',
-    roles: ['root', 'administrador', 'supervisor', 'operario', 'lector'],
-  },
-  {
-    label: 'Usuarios',
-    href: '/usuarios',
-    icon: Users,
-    color: '#AF52DE',
-    roles: ['root', 'administrador'],
-  },
-  {
-    label: 'Empresas',
-    href: '/empresas',
-    icon: Building2,
-    color: '#FF6B35',
-    roles: ['root', 'administrador'],
-  },
-  {
-    label: 'Configuracion',
-    href: '/configuracion',
-    icon: Settings,
-    color: '#636366',
-    roles: ['root', 'administrador'],
-  },
-  {
-    label: 'Auditoria',
-    href: '/auditoria',
-    icon: Shield,
+    id: 'control',
+    label: 'Control',
+    icon: ShieldCheck,
     color: '#FF453A',
-    roles: ['root', 'administrador'],
+    items: [
+      {
+        label: 'Auditoria',
+        href: '/auditoria',
+        icon: Shield,
+        color: '#FF453A',
+        roles: ['root', 'administrador'],
+      },
+      {
+        label: 'Incidencias',
+        href: '/incidencias',
+        icon: AlertTriangle,
+        color: '#FF9F0A',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Anomalias IA',
+        href: '/anomalias',
+        icon: Brain,
+        color: '#FF453A',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Riesgos',
+        href: '/riesgos',
+        icon: ShieldAlert,
+        color: '#FF6B3D',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+    ],
   },
   {
-    label: 'Incidencias',
-    href: '/incidencias',
-    icon: AlertTriangle,
-    color: '#FF9F0A',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Anomalias IA',
-    href: '/anomalias',
-    icon: Brain,
-    color: '#FF453A',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Predicciones',
-    href: '/predicciones',
-    icon: TrendingUp,
-    color: '#30D158',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Riesgos',
-    href: '/riesgos',
-    icon: ShieldAlert,
-    color: '#FF6B3D',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Panel ANF',
-    href: '/dashboard-anf',
-    icon: Droplets,
-    color: '#64D2FF',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Panel Operativo',
-    href: '/dashboard-operativo',
-    icon: Activity,
-    color: '#30D158',
-    roles: ['root', 'administrador', 'supervisor'],
-  },
-  {
-    label: 'Panel Ejecutivo',
-    href: '/dashboard-ejecutivo',
+    id: 'alta-direccion',
+    label: 'Alta Direccion',
     icon: Crown,
     color: '#FFD60A',
-    roles: ['root', 'administrador'],
+    items: [
+      {
+        label: 'Predicciones',
+        href: '/predicciones',
+        icon: TrendingUp,
+        color: '#30D158',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Panel ANF',
+        href: '/dashboard-anf',
+        icon: Droplets,
+        color: '#64D2FF',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Panel Operativo',
+        href: '/dashboard-operativo',
+        icon: Activity,
+        color: '#30D158',
+        roles: ['root', 'administrador', 'supervisor'],
+      },
+      {
+        label: 'Panel Ejecutivo',
+        href: '/dashboard-ejecutivo',
+        icon: Crown,
+        color: '#FFD60A',
+        roles: ['root', 'administrador'],
+      },
+    ],
   },
-] as const;
+  {
+    id: 'configuracion',
+    label: 'Configuracion',
+    icon: Sliders,
+    color: '#636366',
+    items: [
+      {
+        label: 'Usuarios',
+        href: '/usuarios',
+        icon: Users,
+        color: '#AF52DE',
+        roles: ['root', 'administrador'],
+      },
+      {
+        label: 'Empresas',
+        href: '/empresas',
+        icon: Building2,
+        color: '#FF6B35',
+        roles: ['root', 'administrador'],
+      },
+      {
+        label: 'Configuracion',
+        href: '/configuracion',
+        icon: Settings,
+        color: '#636366',
+        roles: ['root', 'administrador'],
+      },
+    ],
+  },
+];
+
+/**
+ * Lista plana retro-compatible: Home + todos los items de los grupos en orden.
+ * Mantiene la API previa para consumidores que buscan por label/href.
+ */
+export const NAVIGATION_ITEMS: readonly NavItem[] = [
+  NAVIGATION_HOME,
+  ...NAVIGATION_GROUPS.flatMap((g) => g.items),
+];
 
 export const ITEMS_PER_PAGE = 20;
 
