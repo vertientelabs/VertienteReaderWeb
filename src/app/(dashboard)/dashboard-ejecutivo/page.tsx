@@ -1,7 +1,6 @@
 'use client';
 
 import { useHasRole } from '@/lib/hooks/use-auth';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import GlassCard from '@/components/ui/glass-card';
 import KpiCard from '@/components/charts/kpi-card';
 import Semaforo from '@/components/charts/semaforo';
@@ -66,7 +65,6 @@ export default function DashboardEjecutivoPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Breadcrumb />
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
           <Crown className="h-6 w-6 text-[#FFD60A]" />

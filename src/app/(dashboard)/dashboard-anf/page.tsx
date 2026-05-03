@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import GlassCard from '@/components/ui/glass-card';
 import KpiCard from '@/components/charts/kpi-card';
 import GlassLineChart from '@/components/charts/line-chart-glass';
@@ -61,7 +60,6 @@ export default function DashboardANFPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Breadcrumb />
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
           <Droplets className="h-6 w-6 text-[#0A84FF]" />

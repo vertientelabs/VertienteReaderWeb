@@ -30,7 +30,8 @@ const routeLabels: Record<string, string> = {
   optimizar: 'Optimizar',
   sugerencias: 'Sugerencias',
   nuevo: 'Nuevo',
-  seed: 'Generador de Datos',
+  seed: 'Generador de Clientes',
+  'seed-medidores': 'Generador de Medidores',
 };
 
 export default function Breadcrumb() {

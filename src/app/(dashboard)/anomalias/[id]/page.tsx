@@ -10,7 +10,6 @@ import { getMedidorById } from '@/lib/services/meter-service';
 import { getClienteById } from '@/lib/services/client-service';
 import { getZonaById } from '@/lib/services/zone-service';
 import { CardSkeleton as LoadingSkeleton } from '@/components/shared/loading-skeleton';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import GlassCard from '@/components/ui/glass-card';
 import GlassChip from '@/components/ui/glass-chip';
 import GlassButton from '@/components/ui/glass-button';
@@ -108,7 +107,6 @@ export default function AnomaliaDetallePage({ params }: { params: Promise<{ id: 
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Breadcrumb />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

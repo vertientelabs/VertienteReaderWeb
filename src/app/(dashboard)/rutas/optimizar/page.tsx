@@ -5,7 +5,6 @@ import { useAuth } from '@/lib/hooks/use-auth';
 import { getRutas } from '@/lib/services/route-service';
 import { optimizeRoute, prioritizeZones, estimateRouteTime } from '@/lib/services/route-optimization-service';
 import { CardSkeleton as LoadingSkeleton } from '@/components/shared/loading-skeleton';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import GlassCard from '@/components/ui/glass-card';
 import GlassButton from '@/components/ui/glass-button';
 import GlassChip from '@/components/ui/glass-chip';
@@ -76,7 +75,6 @@ export default function OptimizarRutasPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Breadcrumb />
       <div>
         <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
           <Navigation className="h-6 w-6 text-[#0A84FF]" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
@@ -17,25 +17,9 @@ import { useAuth } from '@/lib/hooks/use-auth';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
 import GlassTooltip from '@/components/ui/glass-tooltip';
 
-const STORAGE_KEY = 'vrw:sidebar:groups';
-
-function readExpanded(): Record<string, boolean> {
-  if (typeof window === 'undefined') return {};
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function writeExpanded(state: Record<string, boolean>) {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    /* ignore */
-  }
-}
+// Los grupos arrancan colapsados en cada ingreso. El estado solo
+// dura mientras la sesion del navegador este viva; al recargar o
+// volver a entrar, todos vuelven a colapsarse.
 
 export default function Sidebar() {
   const { open, close, collapsed, setCollapsed } = useSidebar();
@@ -43,27 +27,18 @@ export default function Sidebar() {
   const { user } = useAuth();
   const userRole = user?.usertype;
 
-  // Per-group expand/collapse state, persisted in localStorage.
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    const stored = readExpanded();
-    // Default: all groups expanded the first time.
+  // Estado de expansion por grupo. Arranca todo en false (colapsado)
+  // en cada ingreso, sin persistir entre recargas.
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     NAVIGATION_GROUPS.forEach((g) => {
-      initial[g.id] = stored[g.id] ?? true;
+      initial[g.id] = false;
     });
-    setExpanded(initial);
-    setHydrated(true);
-  }, []);
+    return initial;
+  });
 
   const toggleGroup = (id: string) => {
-    setExpanded((prev) => {
-      const next = { ...prev, [id]: !prev[id] };
-      writeExpanded(next);
-      return next;
-    });
+    setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   const filterItems = (items: readonly NavItem[]) =>
@@ -204,7 +179,7 @@ export default function Sidebar() {
           {/* Grupos */}
           {filteredGroups.map(({ group, items }) => {
             const GroupIcon = group.icon;
-            const isOpen = isIconOnly ? true : (hydrated ? expanded[group.id] !== false : true);
+            const isOpen = isIconOnly ? true : expanded[group.id] === true;
             const hasActive = groupHasActive(items);
 
             // Modo icon-only: sin headers de grupo, solo items con divider sutil entre grupos.

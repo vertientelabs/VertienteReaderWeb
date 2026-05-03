@@ -9,7 +9,6 @@ import { useAuth, useHasRole } from '@/lib/hooks/use-auth';
 import GlassCard from '@/components/ui/glass-card';
 import GlassButton from '@/components/ui/glass-button';
 import GlassChip from '@/components/ui/glass-chip';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import type { Zona } from '@/lib/types';
 
 // =====================================================
@@ -189,7 +188,6 @@ export default function SeedClientesPage() {
   if (!isAdmin) {
     return (
       <div className="space-y-6">
-        <Breadcrumb />
         <GlassCard>
           <div className="flex items-center gap-3 text-[var(--text-secondary)]">
             <AlertTriangle className="h-5 w-5 text-[#FF9F0A]" />
@@ -202,7 +200,6 @@ export default function SeedClientesPage() {
 
   return (
     <div className="space-y-6">
-      <Breadcrumb />
 
       {/* Header */}
       <div className="flex items-center gap-3">

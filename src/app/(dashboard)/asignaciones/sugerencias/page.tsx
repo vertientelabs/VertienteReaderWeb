@@ -5,7 +5,6 @@ import { useAuth } from '@/lib/hooks/use-auth';
 import { getAsignaciones } from '@/lib/services/assignment-service';
 import { getRutas } from '@/lib/services/route-service';
 import { getUsers } from '@/lib/services/user-service';
-import Breadcrumb from '@/components/layout/breadcrumb';
 import GlassCard from '@/components/ui/glass-card';
 import GlassButton from '@/components/ui/glass-button';
 import GlassChip from '@/components/ui/glass-chip';
@@ -118,7 +117,6 @@ export default function SugerenciasAsignacionPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <Breadcrumb />
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] flex items-center gap-2">
